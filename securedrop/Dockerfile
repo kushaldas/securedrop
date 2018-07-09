@@ -11,7 +11,7 @@ RUN apt-get update && \
                        gnupg2 ruby redis-server git xvfb haveged curl \
                        gettext paxctl x11vnc enchant libffi-dev sqlite3 wget \
                        libasound2 libdbus-glib-1-2 libgtk2.0-0 libfontconfig1 libxrender1 \
-                       libcairo-gobject2 libgtk-3-0 libstartup-notification0
+                       libcairo-gobject2 libgtk-3-0 libstartup-notification0 torsocks
 
 RUN gem install sass -v 3.4.23
 
@@ -61,6 +61,11 @@ RUN if test $USER_NAME != root ; then useradd --no-create-home --home-dir /tmp -
 RUN cp -r /root/.local /tmp/ && chmod +x /tmp/.local/tbb/tor-browser_en-US/Browser/firefox && chmod -R 777 /tmp/.local
 RUN chown -R $USER_NAME.$USER_NAME /tmp/.local/
 
+RUN apt-get install vim apt-transport-https -y
+
+ADD ./tor_archive.pub /opt/
+RUN echo "deb https://deb.torproject.org/torproject.org trusty main" >> /etc/apt/sources.list && apt-key add /opt/tor_archive.pub && apt-get update
+RUN apt-get upgrade -y tor torsocks
 
 STOPSIGNAL SIGKILL
 
