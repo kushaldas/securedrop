@@ -61,11 +61,8 @@ RUN if test $USER_NAME != root ; then useradd --no-create-home --home-dir /tmp -
 RUN cp -r /root/.local /tmp/ && chmod +x /tmp/.local/tbb/tor-browser_en-US/Browser/firefox && chmod -R 777 /tmp/.local
 RUN chown -R $USER_NAME.$USER_NAME /tmp/.local/
 
-RUN apt-get install vim apt-transport-https -y
-
-ADD ./tor_archive.pub /opt/
-RUN echo "deb https://deb.torproject.org/torproject.org trusty main" >> /etc/apt/sources.list && apt-key add /opt/tor_archive.pub && apt-get update
-RUN apt-get upgrade -y tor torsocks
+RUN wget -O /opt/torsocks_2.2.0-2_amd64.deb http://mirrors.kernel.org/ubuntu/pool/universe/t/torsocks/torsocks_2.2.0-2_amd64.deb
+RUN dpkg -i /opt/torsocks_2.2.0-2_amd64.deb && apt-get install -f
 
 STOPSIGNAL SIGKILL
 
