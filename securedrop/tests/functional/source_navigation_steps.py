@@ -44,6 +44,10 @@ class SourceNavigationStepsMixin():
     def _source_chooses_to_submit_documents(self):
         self._source_clicks_submit_documents_on_homepage()
 
+        def _locate():
+            assert(self.driver.find_element_by_css_selector('#codename'))
+
+        self.wait_for(_locate)
         codename = self.driver.find_element_by_css_selector('#codename')
 
         assert len(codename.text) > 0
@@ -137,7 +141,15 @@ class SourceNavigationStepsMixin():
         assert continue_button_hover_icon.is_displayed()
 
         continue_button.click()
-        time.sleep(self.sleep_time)
+
+        def _locate():
+            if not hasattr(self, 'accept_languages'):
+                headline = self.driver.find_element_by_class_name('headline')
+                assert 'Submit Files or Messages' == headline.text
+            else:
+                time.sleep(self.sleep_time)
+
+        self.wait_for(_locate)
 
         if not hasattr(self, 'accept_languages'):
             headline = self.driver.find_element_by_class_name('headline')
@@ -163,7 +175,18 @@ class SourceNavigationStepsMixin():
             assert toggled_submit_button_icon.is_displayed()
 
             submit_button.click()
-            time.sleep(self.sleep_time)  # Long waits
+
+            def _locate():
+                if not hasattr(self, 'accept_languages'):
+                    notification = self.driver.find_element_by_css_selector(
+                        '.success')
+                    expected_notification = (
+                        'Thank you for sending this information to us')
+                    assert expected_notification in notification.text
+                else:
+                    time.sleep(self.sleep_time)  # Long waits
+
+            self.wait_for(_locate)
 
             if not hasattr(self, 'accept_languages'):
                 notification = self.driver.find_element_by_css_selector(
@@ -218,7 +241,11 @@ class SourceNavigationStepsMixin():
         logout = self.driver.find_element_by_id('logout')
         logout.send_keys(" ")
         logout.click()
-        time.sleep(self.sleep_time)
+        
+        def _locate():
+            assert self.driver.find_element_by_css_selector('.important')
+
+        self.wait_for(_locate)
         assert self.driver.find_element_by_css_selector('.important')
 
     def _source_not_found(self):

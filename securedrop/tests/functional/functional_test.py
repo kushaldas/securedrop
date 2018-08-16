@@ -354,7 +354,7 @@ class FunctionalTest(object):
     def create_new_totp(self, secret):
         self.new_totp = pyotp.TOTP(secret)
 
-    def wait_for(self, function_with_assertion, timeout=5):
+    def wait_for(self, function_with_assertion, timeout=30):
         """Polling wait for an arbitrary assertion."""
         # Thanks to
         # http://chimera.labs.oreilly.com/books/1234000000754/ch20.html#_a_common_selenium_problem_race_conditions
